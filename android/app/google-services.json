@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "756300860690",
+    "project_id": "smart-track-and-travel-88119",
+    "storage_bucket": "smart-track-and-travel-88119.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756300860690:android:3bc55c22f05594189337cb",
+        "android_client_info": {
+          "package_name": "com.example.smart_track"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756300860690-43clvec1jquqj1kr8h1vu65mf0p38ju9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9W5QwweHWyLHIawrv9YURpCeclb6AdxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756300860690-43clvec1jquqj1kr8h1vu65mf0p38ju9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
