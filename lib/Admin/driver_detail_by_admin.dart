@@ -167,8 +167,8 @@ class _DriverDetailByAdminState extends State<DriverDetailByAdmin> {
               InkWell(
                 onTap: (){
                   print("llll");
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => ParentRequest()));
+                  // Navigator.of(context)
+                  //     .push(MaterialPageRoute(builder: (context) => ParentRequest()));
 
                 },
                 child: Card(
@@ -200,8 +200,8 @@ class _DriverDetailByAdminState extends State<DriverDetailByAdmin> {
               ),
               InkWell(
                 onTap: (){
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => StudentDetail()));
+                  // Navigator.of(context)
+                  //     .push(MaterialPageRoute(builder: (context) => StudentDetail()));
                 },
                 child: Card(
                   elevation: 8,

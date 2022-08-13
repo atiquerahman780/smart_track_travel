@@ -104,22 +104,22 @@ class _UserPasswordState extends State<UserPassword> {
 
 
                           String equal=q.r+"Parent"+_passwordzController.text+_userznameController.text;
-                          Query referenceData =FirebaseDatabase.instance.reference().child("LoginType").orderByChild('uid').equalTo(equal);
+                          Query referenceData =FirebaseDatabase.instance.reference().child("applock").orderByChild('uid').equalTo(equal);
                           referenceData.once().then((DataSnapshot event) {
                             var values = event.value;
                             if (values == null) {
 
                               String equal1=q.r+"Driver"+_passwordzController.text+_userznameController.text;
                               print(q.r);
-                              Query referenceDat =FirebaseDatabase.instance.reference().child("LoginType").orderByChild('uid').equalTo(equal1);
+                              Query referenceDat =FirebaseDatabase.instance.reference().child("applock").orderByChild('uid').equalTo(equal1);
                               referenceDat.once().then((DataSnapshot event) {
                                 print("llln");
                                 var values = event.value;
                                 if (values == null) {
                                   print("jjj");
-                                  // Navigator.of(context)
-                                  //     .pushReplacement(
-                                  //     MaterialPageRoute(builder: (context) => UserPassword()));
+                                  Navigator.of(context)
+                                      .pushReplacement(
+                                      MaterialPageRoute(builder: (context) => UserPassword()));
                                 }
                                 else {
                                   Navigator.of(context)

@@ -19,7 +19,7 @@ class _SettingState extends State<Setting1> {
     super.initState();
     _usernameController=TextEditingController();
     _passwordController=TextEditingController();
-    _reference =FirebaseDatabase.instance.reference().child('LoginType');
+    _reference =FirebaseDatabase.instance.reference().child('applock');
   }
   final _formKey = GlobalKey<FormState>();
   @override
@@ -77,7 +77,7 @@ class _SettingState extends State<Setting1> {
             ),
 
 
-            ElevatedButton(child: Text('Save User',style: TextStyle(
+            ElevatedButton(child: Text('Save Lock',style: TextStyle(
               fontSize: 20,
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -94,6 +94,11 @@ class _SettingState extends State<Setting1> {
                   'uid' :uid,
                 };
                 _reference.child(quan.tity).set(products).then((value) {
+                  setState(() {
+
+                    _usernameController.text="";
+                    _passwordController.text="";
+                  });
                   // Navigator.of(context)
                   //     .pushReplacement(MaterialPageRoute(builder: (context) => HomeParent()));
                 });
@@ -102,8 +107,29 @@ class _SettingState extends State<Setting1> {
                 //saveProduct();
               },
             ),
+
             SizedBox(
                 height: MediaQuery.of(context).size.width*0.15
+            ),
+            ElevatedButton(child: Text('Disable App Lock',style: TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+            ),
+              onPressed: (){
+                String uid = quan.tity+"Parent";
+                Map<String,String> products={
+                  'uid' :uid,
+                };
+                _reference.child(quan.tity).set(products).then((value) {
+                  // Navigator.of(context)
+                  //     .pushReplacement(MaterialPageRoute(builder: (context) => HomeParent()));
+                });
+
+
+                //saveProduct();
+              },
             ),
           ],
         ),

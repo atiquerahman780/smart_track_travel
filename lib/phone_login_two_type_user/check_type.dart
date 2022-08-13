@@ -3,13 +3,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:track_travel/driver/home_driver.dart';
 import 'package:track_travel/parent/home_parent.dart';
-
 import '../user_password.dart';
-import 'login_type.dart';
 
 class CheckType extends StatefulWidget {
   const CheckType({Key? key}) : super(key: key);
-
   @override
   State<CheckType> createState() => _CheckTypeState();
 }
@@ -21,14 +18,14 @@ class _CheckTypeState extends State<CheckType> {
     // TODO: implement initState
     super.initState();
     String equal=q.r+"Parent";
-    Query referenceData =FirebaseDatabase.instance.reference().child("LoginType").orderByChild('uid').equalTo(equal);
+    Query referenceData =FirebaseDatabase.instance.reference().child("applock").orderByChild('uid').equalTo(equal);
     referenceData.once().then((DataSnapshot event) {
       var values = event.value;
       if (values == null) {
 
         String equal1=q.r+"Driver";
         print(q.r);
-        Query referenceDat =FirebaseDatabase.instance.reference().child("LoginType").orderByChild('uid').equalTo(equal1);
+        Query referenceDat =FirebaseDatabase.instance.reference().child("applock").orderByChild('uid').equalTo(equal1);
         referenceDat.once().then((DataSnapshot event) {
           print("llln");
           var values = event.value;
@@ -53,13 +50,9 @@ class _CheckTypeState extends State<CheckType> {
       }
       setState(() {});
     });
-
-
-
   }
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -88,21 +81,17 @@ class _CheckTypeState extends State<CheckType> {
                   ],
                 ),
               ),
-
               SizedBox(
                 height: MediaQuery.of(context).size.height*0.425,
                 width: MediaQuery.of(context).size.width,
                 child:Image.asset('assets/images/stlogo.jpeg'),
               ),
-
               Container(
                 height: MediaQuery.of(context).size.height*0.373,
                 width: MediaQuery.of(context).size.width,
                 child: Container(
                   child: Column(
                     children: [
-                     // const Text("                                                                                                                                                                                                                                                                                                                                            "),
-
                       SizedBox(
                         height: MediaQuery.of(context).size.width*0.07,
                       ),

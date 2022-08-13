@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:track_travel/phone_login_two_type_user/check_type_two.dart';
 import 'login_type.dart';
 
 class opt extends StatefulWidget {
@@ -90,8 +92,17 @@ class _optState extends State<opt> {
                     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: widget.verification, smsCode: verificationCode);
                     await auth.signInWithCredential(credential).then((value){
                       print("You are logged in successfully");
+                      Fluttertoast.showToast(
+                          msg: "Verification Successful",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.blue,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
                       Navigator.of(context)
-                          .pushReplacement(MaterialPageRoute(builder: (context) => LoginType()));
+                          .pushReplacement(MaterialPageRoute(builder: (context) => CheckType2()));
                     });
                     // showDialog(
                     //     context: context,

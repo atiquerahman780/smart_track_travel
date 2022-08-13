@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:track_travel/Admin/admin_login.dart';
 
 import 'opt.dart';
@@ -119,6 +120,15 @@ class _LoginPhoneState extends State<LoginPhone> {
                           },
                           verificationFailed: (FirebaseAuthException error) {
                             if (error.code == 'invalid-phone-number') {
+                              Fluttertoast.showToast(
+                                  msg: "Verification Failed",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.blue,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0
+                              );
                               print('The provided phone number is not valid.');
                               print('The provided phone number is not valid.');
 
@@ -151,7 +161,7 @@ class _LoginPhoneState extends State<LoginPhone> {
                   Column(
                     children: [
                       Text("Admin Login",style: TextStyle(color: Colors.blue),),
-                      Text("Ckick Here",),
+                      Text("Click Here",),
                     ],
                   ),
                 ),

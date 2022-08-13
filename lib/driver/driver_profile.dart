@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:track_travel/phone_login_two_type_user/login_type.dart';
 
 import 'home_driver.dart';
 class DriverProfile extends StatefulWidget {
@@ -17,7 +18,7 @@ class _CreateEditAccountState extends State<DriverProfile> {
   late String fileUrl;
   int c =0;
   late TextEditingController _nameController, _phoneController, _totalseatsController,_reserveseatsController,
-      _routeController,_vehicalnoController,_vehicalcolorController,_DuesController,_availableseatsController;
+      _routeController,_vehicalnoController,_vehicalcolorController,_DuesController,_availableseatsController,_destinationController;
   late File imgFile;
   late DatabaseReference _reference;
   @override
@@ -33,6 +34,7 @@ class _CreateEditAccountState extends State<DriverProfile> {
     _vehicalcolorController=TextEditingController();
     _DuesController=TextEditingController();
     _availableseatsController=TextEditingController();
+    _destinationController=TextEditingController();
     _reference =FirebaseDatabase.instance.reference().child('Drivers');
   }
   final _formKey = GlobalKey<FormState>();
@@ -168,6 +170,30 @@ class _CreateEditAccountState extends State<DriverProfile> {
                         ),
 
                       ),
+                    ),Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                         controller: _destinationController,
+                        minLines: 2,
+                        maxLines: 5,
+                        decoration: const InputDecoration(
+                          labelText: 'Destination',
+                          // hintText: 'description',
+                          hintStyle: TextStyle(
+                              color: Colors.grey
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                        ),
+
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(20.0),
@@ -256,6 +282,7 @@ class _CreateEditAccountState extends State<DriverProfile> {
     String vahicalno = _vehicalnoController.text;
     String vehicalcilor = _vehicalcolorController.text;
     String dues = _DuesController.text;
+    String destination = _destinationController.text;
     String key = _reference.push().key as String;
     Map<String,String> products={
       'name' :name,
@@ -267,8 +294,13 @@ class _CreateEditAccountState extends State<DriverProfile> {
       'vahicalno' :vahicalno,
       'vehicalcilor' :vehicalcilor,
       'dues' :dues,
+      'raating' :5.toString(),
+      'raatingno' :0.toString(),
       'picUrl' :fileUrl,
-      //'id' : key
+      'destination' :destination,
+      'uid' : q.r,
+      'status' : "Active",
+
     };
 
 
@@ -276,8 +308,7 @@ class _CreateEditAccountState extends State<DriverProfile> {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => HomeDriver()));
     });
-      //Navigator.pop(context);
-   // });
+
 
   }
   Future<void> uploadImage() async {

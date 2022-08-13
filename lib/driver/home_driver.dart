@@ -1,13 +1,21 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:track_travel/data.dart';
 import 'package:track_travel/driver/parents_requests.dart';
 import 'package:track_travel/driver/setting.dart';
 import 'package:track_travel/driver/students_detail.dart';
+import 'package:track_travel/phone_login_two_type_user/check_type.dart';
 
 import '../Drawer.dart';
 import '../phone_login_two_type_user/login_splash.dart';
 import 'DrawerDriver.dart';
 import 'create_edit_account.dart';
+import 'home_location.dart';
 class HomeDriver extends StatefulWidget {
   const HomeDriver({Key? key}) : super(key: key);
 
@@ -16,6 +24,203 @@ class HomeDriver extends StatefulWidget {
 }
 
 class _HomeDriverState extends State<HomeDriver> {
+  String image='';
+  String DriverName='';
+  String phoneno='';
+  String totalseats='';
+  String reserve='';
+  String available='';
+  String route='';
+  String vehicalno='';
+  String vehicalcolor='';
+  String dues='';
+  String uoid='';
+  String destination='';
+  String raat='';
+  String num='';
+  String status='';
+
+ // print(t)
+  Timer? timer;
+  late DatabaseReference _reference;
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    final uid = user?.uid;
+    String? l =uid;
+    print(l);
+     _reference =FirebaseDatabase.instance.reference().child('DriversLocations');
+    Query referenceData =FirebaseDatabase.instance.reference().child("Drivers").orderByChild("uid").equalTo(l);
+    referenceData.once().then((DataSnapshot event) {
+      //sataList.clear();
+      // var keys = event.value;
+      var values = event.value;
+      // DataSnapshot snapshot = event.value;
+      Map<dynamic,dynamic> map = values as Map<dynamic,dynamic>;
+      // print(map);
+      // var values = dataSnapshot.value;
+      print("values");
+      print(values);
+      map.forEach((key,value){
+        print(value);
+        var pic = value['picUrl'];
+        var due = value['dues'];
+        var vc = value['vehicalcilor'];
+        var vn = value['vahicalno'];
+        var r = value['route'];
+        var av = value['availableseats'];
+        var re = value['reserveseats'];
+        var ts = value['totalseats'];
+        var pn = value['phone'];
+        var dn = value['name'];
+        var id = value['uid'];
+        var des = value['destination'];
+        var raa = value['raating'];
+        var ran = value['raatingno'];
+        var statu = value['status'];
+
+        uoid=id;
+        image=pic;
+        DriverName=dn;
+        phoneno=pn;
+        totalseats=ts;
+        reserve=re;
+        available=av;
+        route=r;
+        destination=des;
+        raat=raa;
+        num=ran;
+        status=statu;
+
+        //image=pic;
+
+        vehicalcolor=vc;
+        dues=due;
+        vehicalno=vn;
+        print("lun");
+        print(image);
+        print("lin");
+
+        // a=uid;
+        // print(uid);
+        // print(u);
+      });
+      //print(value[uid]uid);
+
+      setState(() {
+
+      });
+    });
+
+  }
+  bool servicestatus = false;
+  bool haspermission = false;
+  late LocationPermission permission;
+  late Position position;
+  String long = "", lat = "";
+  late StreamSubscription<Position> positionStream;
+
+  checkGps() async {
+    servicestatus = await Geolocator.isLocationServiceEnabled();
+    if(servicestatus){
+      permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          print('Location permissions are denied');
+        }else if(permission == LocationPermission.deniedForever){
+          print("'Location permissions are permanently denied");
+        }else {
+          haspermission = true;
+        }
+      }else {
+
+        haspermission = true;
+      }
+
+      if(haspermission){
+        setState(() {
+          //refresh the UI
+        });
+
+        getLocation();
+      }
+    }else {
+      print("GPS Service is not enabled, turn on GPS location");
+    }
+
+    setState(() {
+      //refresh the UI
+    });
+  }
+
+  getLocation() async {
+    if(isSwitched==true){
+      position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      print(position.longitude); //Output: 80.24599079
+      print(position.latitude); //Output: 29.6593457
+
+      long = position.longitude.toString();
+      lat = position.latitude.toString();
+      // print(long);
+      // print(lat);
+
+      setState(() {
+        //refresh UI
+      });
+
+      LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high, //accuracy of the location data
+        distanceFilter: 100, //minimum distance (measured in meters) a
+        //device must move horizontally before an update event is generated;
+      );
+
+
+      StreamSubscription<Position> positionStream = Geolocator.getPositionStream(
+          locationSettings: locationSettings).listen((Position position) {
+        print(position.longitude); //Output: 80.24599079
+        print(position.latitude); //Output: 29.6593457
+
+        long = position.longitude.toString();
+        lat = position.latitude.toString();
+
+        setState(() {
+          //refresh UI on update
+        });
+      });
+
+      ///////
+      //String key = _reference.push().key as String;
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      final User? user = auth.currentUser;
+      final uid = user?.uid;
+      String? l =uid;
+      String ab=l!;
+
+
+      Map<String,String> products={
+        'driveruid' :ab,
+        'Long' :long,
+        'Lat' :lat,
+      };
+
+      _reference.child(ab).set(products).then((value) {
+       // Navigator.pop(context);
+      });
+
+
+    }
+    else{
+      print("ll");
+    }
+
+  }
+
+
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
     setState(() {
@@ -25,13 +230,15 @@ class _HomeDriverState extends State<HomeDriver> {
   bool isSwitched = false;
   @override
   Widget build(BuildContext context) {
+    double abc=double.parse(raat);
+    print(raat);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: Text("Driver Side"),
         actions: [
           new IconButton(onPressed: () async {
             await FirebaseAuth.instance.signOut();
-            Navigator.push(
+            Navigator.pushReplacement(
               context
               , MaterialPageRoute(builder: (_)=> LoginSplash()),
             );
@@ -40,7 +247,7 @@ class _HomeDriverState extends State<HomeDriver> {
               icon: Icon(Icons.logout)),
         ],
       ),
-        drawer: NavigationDrawerWidgetDriver(),
+        //drawer: NavigationDrawerWidgetDriver(),
 
         body: Container(
          // color: Colors.black12,
@@ -60,19 +267,39 @@ class _HomeDriverState extends State<HomeDriver> {
                         child: Container(
                           //height: MediaQuery.of(context).size.width*0.25,
                           alignment: const Alignment(0.0,2.5),
-                          child: const CircleAvatar(
+                          child:  CircleAvatar(
                             backgroundColor: Colors.black12,
-                            child: Icon(Icons.person,size: 80,color: Colors.black12,),
-                            radius: 60.0,
+                            child:
+                            CircleAvatar(
+                             // backgroundColor: Colors.black12,
+                              radius: 65,
+                              //backgroundImage: AssetImage('assets/bottombar/loading.gif'),
+                              child: CircleAvatar(
+                                radius: 65,
+                                backgroundColor: Colors.transparent,
+                                backgroundImage: NetworkImage(image),
+                              ),
+                            ),
+                            radius: 80.0,
                           ),
                         ),
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      Text(" Driver Name ",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold,fontSize: 17),),
+                      Text(DriverName,style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold,fontSize: 17),),
+                        Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(5, (index) {
+                              return Icon(
+                           index < abc ? Icons.star : Icons.star_border,
+                         );
+                         }),
+                             ),
+                      Text(("(")+num+(")"),style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold,fontSize: 13),),
+                      Text(("(")+status+(")"),style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold,fontSize: 13),),
                       SizedBox(
-                        height: MediaQuery.of(context).size.width*0.06,
+                        height: MediaQuery.of(context).size.width*0.02,
                       ),
                       Row(
                         children: [
@@ -85,12 +312,12 @@ class _HomeDriverState extends State<HomeDriver> {
                               child: Column(
                                 children: [
                                   Text("Reserve Seats",style: TextStyle(),),
-                                  Text("4",style: TextStyle(),),
+                                  Text(reserve,style: TextStyle(),),
                                   SizedBox(
                                     height: MediaQuery.of(context).size.width*0.02,
                                   ),
                                   Text("Vehicle No.",style: TextStyle(),),
-                                  Text("LE 7055",style: TextStyle(),),
+                                  Text(vehicalno,style: TextStyle(),),
 
                                 ],
                               ),
@@ -104,12 +331,12 @@ class _HomeDriverState extends State<HomeDriver> {
                               child: Column(
                                 children: [
                                   Text("Available Seats",style: TextStyle(),),
-                                  Text("3",style: TextStyle(),),
+                                  Text(available,style: TextStyle(),),
                                   SizedBox(
                                     height: MediaQuery.of(context).size.width*0.02,
                                   ),
                                   Text("Color",style: TextStyle(),),
-                                  Text("Red",style: TextStyle(),),
+                                  Text(vehicalcolor,style: TextStyle(),),
 
                                 ],
                               ),
@@ -126,12 +353,12 @@ class _HomeDriverState extends State<HomeDriver> {
                               child: Column(
                                 children: [
                                   Text("Total Seats",style: TextStyle(),),
-                                  Text("7",style: TextStyle(),),
+                                  Text(totalseats,style: TextStyle(),),
                                   SizedBox(
                                     height: MediaQuery.of(context).size.width*0.02,
                                   ),
                                   Text("Dues",style: TextStyle(),),
-                                  Text("7000",style: TextStyle(),),
+                                  Text(dues,style: TextStyle(),),
 
                                 ],
                               ),
@@ -161,46 +388,78 @@ class _HomeDriverState extends State<HomeDriver> {
                             child:
                             Padding(
                               padding: const EdgeInsets.fromLTRB(8, 8,8, 0),
-                              child: Text("Johar Town Block A, Block B, Block D,Block E, Block F, Block G To University of Punjab"
+                              child: Text(route+" "+destination
                                 ,style: TextStyle(),),
                             )
                         ),
                       ),
-                      Card(
-                        elevation: 8,
-                        child: Container(
-                            //color: Colors.blue,
-                            height: MediaQuery.of(context).size.width*0.15,
-                            width: MediaQuery.of(context).size.width,
-                            child:
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                              child: Row(
-                                children: [
+                      InkWell(
+                        onTap: (){
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) => Home()));
+                        },
+                        child: Card(
+                          elevation: 8,
+                          child: Container(
+                              //color: Colors.blue,
+                              height: MediaQuery.of(context).size.width*0.15,
+                              width: MediaQuery.of(context).size.width,
+                              child:
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                child: Row(
+                                  children: [
 
-                                  Text("Location",style: TextStyle(),),
-                                  const Expanded(child: SizedBox()),
-                                  Align(alignment: Alignment.topRight, child: Switch(
-                                    value: isSwitched,
-                                    activeColor: Colors.blue,
-                                    inactiveThumbColor: Colors.black,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isSwitched = value;
-                                      });
-                                    },
-                                  ),),
-                                ],
+                                    Text("Location",style: TextStyle(),),
+                                    const Expanded(child: SizedBox()),
+                                    Align(alignment: Alignment.topRight,
+                                      child: Switch(
+                                      value: isSwitched,
+                                      activeColor: Colors.blue,
+                                      inactiveThumbColor: Colors.black,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          isSwitched = value;
+                                          print(value);
+                                          if(value==true){
 
-                              ),
-                            )
+                                            print("hhhhh");
+
+                                            setState(() {
+
+                                              checkGps();
+                                            });
+
+
+                                              timer = Timer.periodic(Duration(seconds: 15), (Timer t) => checkGps());
+
+
+                                          }
+                                          else if (value==false){
+                                            //haspermission=false;
+
+
+                                           setState(() {
+                                             isSwitched=false;
+                                           });
+                                          }
+                                          print("value");
+                                        });
+                                      },
+                                    ),
+                                    ),
+                                  ],
+
+                                ),
+                              )
+                          ),
                         ),
                       ),
                       InkWell(
                         onTap: (){
                           print("llll");
                           Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) => ParentRequest()));
+                              .push(MaterialPageRoute(builder: (context) => ParentRequest(drivername: DriverName,Driverphone:phoneno,driverlocation:"location",driverpicture:image)));
 
                         },
                         child: Card(
@@ -233,7 +492,7 @@ class _HomeDriverState extends State<HomeDriver> {
                       InkWell(
                         onTap: (){
                           Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) => StudentDetail()));
+                              .push(MaterialPageRoute(builder: (context) => StudentDetail(title: uoid,)));
                         },
                         child: Card(
                           elevation: 8,
@@ -290,7 +549,7 @@ class _HomeDriverState extends State<HomeDriver> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height*0.82 ,
                     width: MediaQuery.of(context).size.width,
-                    child:CreateEditAccount(),
+                    child:CreateEditAccount(data: Data(totalseats,available,route,reserve,dues,vehicalcolor,vehicalno,phoneno,DriverName,image,uoid,destination)),
                     //FirebaseAuth.instance.currentUser==null? SignIn():account(),
                   ),
                 ]

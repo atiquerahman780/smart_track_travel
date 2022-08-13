@@ -1,13 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../Drawer.dart';
+import '../driver/home_location.dart';
+import '../driver/lata.dart';
 import '../phone_login_two_type_user/login_splash.dart';
 import '../phone_login_two_type_user/login_type.dart';
 import '../phone_login_two_type_user/setting1.dart';
 import 'available_drivers.dart';
 import 'google_map.dart';
+import 'home.dart';
 class HomeParent extends StatefulWidget {
 
   const HomeParent({Key? key}) : super(key: key);
@@ -17,6 +21,8 @@ class HomeParent extends StatefulWidget {
 }
 
 class _HomeParentState extends State<HomeParent> {
+
+
   int _selectedIndex = 0;
   void _onItemTapped(int index) {
     setState(() {
@@ -28,11 +34,11 @@ class _HomeParentState extends State<HomeParent> {
     return SafeArea(
       child:
       Scaffold(
-        appBar: AppBar(title: Text("Driver Side"),
+        appBar: AppBar(title: Text("Parent Side"),
           actions: [
             new IconButton(onPressed: () async {
               await FirebaseAuth.instance.signOut();
-              Navigator.push(
+              Navigator.pushReplacement(
                 context
                 , MaterialPageRoute(builder: (_)=> LoginSplash()),
               );
@@ -41,7 +47,7 @@ class _HomeParentState extends State<HomeParent> {
                 icon: Icon(Icons.logout)),
           ],
         ),
-        drawer: NavigationDrawerWidget(),
+       // drawer: NavigationDrawerWidget(),
 
           body: Container(
             // color: Colors.black12,
@@ -49,65 +55,11 @@ class _HomeParentState extends State<HomeParent> {
               child: Column(
                 children: [
                   if (_selectedIndex == 0) ...[
-
-            Card(
-            child: Column(
-            children: [
-                SizedBox(
-                height: MediaQuery.of(context).size.width*0.02,
-          ),
-          SizedBox(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.width*0.25,
-            child: Container(
-              //height: MediaQuery.of(context).size.width*0.25,
-              alignment: const Alignment(0.0,2.5),
-              child: const CircleAvatar(
-                backgroundColor: Colors.black12,
-                child: Icon(Icons.person,size: 80,color: Colors.black12,),
-                radius: 60.0,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(" Driver Name ",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold,fontSize: 17),),
-          SizedBox(
-            height: MediaQuery.of(context).size.width*0.02,
-          ),
-          Text("03024334546"),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
-                  print("llll");
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => GooMap()));
-
-                }, child: Text("Location")),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(onPressed: (){
-                  print("llll");
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => GooMap()));
-
-                }, child: Text("Leave Driver")),
-              ),
-            ],
-          ),
-
-          SizedBox(
-            height: MediaQuery.of(context).size.width*0.02,
-          ),
-            ],
-            ),
-            )
-
+                        Container(
+                          height: MediaQuery.of(context).size.height*0.80,
+                          width: MediaQuery.of(context).size.width,
+                          child: Home1(),
+                        ),
                   ]
                   else if (_selectedIndex == 1) ...[
                     SizedBox(

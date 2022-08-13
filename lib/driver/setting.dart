@@ -19,7 +19,7 @@ class _SettingState extends State<Setting> {
     super.initState();
     _usernameController=TextEditingController();
     _passwordController=TextEditingController();
-    _reference =FirebaseDatabase.instance.reference().child('LoginType');
+    _reference =FirebaseDatabase.instance.reference().child('applock');
   }
   final _formKey = GlobalKey<FormState>();
   @override
@@ -77,7 +77,8 @@ class _SettingState extends State<Setting> {
             ),
 
 
-            ElevatedButton(child: Text('Save User',style: TextStyle(
+            ElevatedButton(
+              child: Text('Save Lock',style: TextStyle(
               fontSize: 20,
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -94,16 +95,33 @@ class _SettingState extends State<Setting> {
                   'uid' :uid,
                 };
                 _reference.child(quan.tity).set(products).then((value) {
-                  // Navigator.of(context)
-                  //     .pushReplacement(MaterialPageRoute(builder: (context) => HomeParent()));
                 });
 
-
-                //saveProduct();
               },
             ),
             SizedBox(
                 height: MediaQuery.of(context).size.width*0.15
+            ),
+            ElevatedButton(
+              child: Text('Disable App Lock',style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+              ),
+              onPressed: (){
+                String uid = quan.tity+"Driver";
+                String key = _reference.push().key as String;
+                Map<String,String> products={
+                  'uid' :uid,
+                };
+                _reference.child(quan.tity).set(products).then((value) {
+                  setState(() {
+                    _usernameController.text='';
+                    _passwordController.text='';
+                  });
+                });
+              },
             ),
           ],
         ),
